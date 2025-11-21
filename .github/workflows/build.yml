@@ -1,0 +1,45 @@
+---
+name: 'Build'
+on:
+  workflow_dispatch:
+jobs:
+  publish:
+    name: 'Base'
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: 'Install Docker CE'
+        run: |
+          sudo apt-get update
+          #sudo apt install apt-transport-https ca-certificates curl software-properties-common
+          #curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          #sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          #apt-cache policy docker-ce
+          sudo apt install docker-ce
+          sudo docker run hello-world
+      - name: 'Install Singularity'
+        run: |
+          sudo apt-get update
+          sudo apt install singularity-container
+      - name: 'Check Out Repository'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: 'main'
+          repository: 'nvcr.io/nvidia/hpc-benchmarks'
+      - name: 'Build Docker Image'
+        run: |
+          docker build -t nvidia-hpc-benchmarks .
+          docker image ls
+      - name: 'Save Docker Image to TAR File'
+        run: |
+          docker save -o nvidia-hpc-benchmarks.tar nvidia-hpc-benchmarks
+          ls -ahl nvidia-hpc-benchmarks.tar
+      - name: 'Create Singularity Image'
+        run: |
+          #singularity pull --name gpu-fryer.img docker://localhost:5000/gpu-fryer:latest
+          singularity build nvidia-hpc-benchmarks.img docker-archive://nvidia-hpc-benchmarks.tar
+          ls -ahl nvidia-hpc-benchmarks.img
+      - name: 'Upload Singularity Image File'
+        uses: 'actions/upload-artifact@v4'
+        with:
+          name: 'singularity-image-file'
+          path: 'nvidia-hpc-benchmarks.img'
