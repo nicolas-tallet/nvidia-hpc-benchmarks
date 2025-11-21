@@ -22,7 +22,7 @@ jobs:
           sudo apt install singularity-container
       - name: 'Pull Docker Image'
         run: |
-          docker pull nvcr.io/nvidia/hpc-benchmarks
+          docker pull nvcr.io/nvidia/hpc-benchmarks:25.09
           docker image ls
       - name: 'Save Docker Image to TAR File'
         run: |
