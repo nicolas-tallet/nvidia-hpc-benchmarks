@@ -26,7 +26,7 @@ jobs:
           docker image ls
       - name: 'Save Docker Image to TAR File'
         run: |
-          docker save -o nvidia-hpc-benchmarks.tar nvidia-hpc-benchmarks
+          docker save -o nvidia-hpc-benchmarks.tar nvcr.io/nvidia/hpc-benchmarks:25.09
           ls -ahl nvidia-hpc-benchmarks.tar
       - name: 'Create Singularity Image'
         run: |
