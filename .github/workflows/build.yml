@@ -20,14 +20,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt install singularity-container
-      - name: 'Check Out Repository'
-        uses: 'actions/checkout@v4'
-        with:
-          ref: 'main'
-          repository: 'nvcr.io/nvidia/hpc-benchmarks'
-      - name: 'Build Docker Image'
+      - name: 'Pull Docker Image'
         run: |
-          docker build -t nvidia-hpc-benchmarks .
+          docker pull nvcr.io/nvidia/hpc-benchmarks
           docker image ls
       - name: 'Save Docker Image to TAR File'
         run: |
